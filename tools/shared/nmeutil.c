@@ -1245,6 +1245,12 @@ conflict(int nm1, int nm2)
             if (sptr2 == SOC_SPTR(t1))
               return CONFLICT;
       }
+
+      /* If nm1 and nm2 are equivalent common block variable,
+       * reference handing way of equivalence statement, do not optimize.
+       */
+      if (is_equiv_cmblk_var(nm1, nm2))
+        return CONFLICT;
       if (!hlcf || XBIT(104, 0x8)) {
         if (SCG(sptr1) == SC_BASED && INLNG(sptr1) && UNSAFEG(sptr1) &&
             SCG(sptr2) == SC_BASED && INLNG(sptr2) && UNSAFEG(sptr2))

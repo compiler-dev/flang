@@ -68,6 +68,8 @@ bool is_empty_typedef(DTYPE dtype);
  */
 bool no_data_components(DTYPE dtype);
 
+bool is_equiv_cmblk_var(int nme1, int nme2);
+
 /**
    \brief if array datatype, returns the element dtype, else returns dtype
  */

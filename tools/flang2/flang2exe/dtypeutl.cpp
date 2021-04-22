@@ -1256,3 +1256,40 @@ kanji_prefix(unsigned char *p, int newlen, int len)
   return (p - begin);
 }
 
+#define IS_COMMON_VAR(sptr) (SCG(sptr) == SC_CMBLK &&\
+                            MODCMNG(MIDNUMG(sptr)) == 0)
+
+/* Return variable location in common block */
+static int
+get_cmblk_index(int nme)
+{
+  int tmpsptr;
+  int sptr = basesym_of(nme);
+  int cmblk = MIDNUMG(sptr);
+  int index = 0;
+  for (tmpsptr = CMEMFG(cmblk); tmpsptr > NOSYM; tmpsptr = SYMLKG(tmpsptr)) {
+    index++;
+    if (sptr == tmpsptr)
+      return index;
+  }
+  return 0;
+}
+
+/* Return true if two common block variable is equivalence */
+bool
+is_equiv_cmblk_var(int nm1, int nm2)
+{
+  int sptr1, sptr2;
+
+  sptr1 = basesym_of(nm1);
+  sptr2 = basesym_of(nm2);
+  if (sptr1 != sptr2 && IS_COMMON_VAR(sptr1) && IS_COMMON_VAR(sptr2)) {
+    int index1 = get_cmblk_index(nm1);
+    int index2 = get_cmblk_index(nm2);
+    if (index1 != 0 && index2 != 0 && index1 == index2 &&
+        getsymbol(SYMNAME(MIDNUMG(sptr1))) == getsymbol(SYMNAME(MIDNUMG(sptr2))))
+      return true;
+  }
+  return false;
+}
+
